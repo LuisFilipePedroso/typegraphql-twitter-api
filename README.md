@@ -10,7 +10,7 @@ The first thing you should do is exec the following command:
 
     docker run --name mongo -p 27017:27017  mongo
   
-Then, check whether is running with the command:
+Then, check whether the mongo image is running with the command:
 
     docker ps 
   
