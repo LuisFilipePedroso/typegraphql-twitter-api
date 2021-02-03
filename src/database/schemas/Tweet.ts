@@ -1,16 +1,19 @@
 import mongoose, { Schema, Document } from 'mongoose';
+import normalize from 'normalize-mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
+import { IUser } from "./User";
 
-export interface ITweet{
-  _id?: any;
-  author: string;
+export interface ITweet {
+  id?: any;
+  author: IUser;
   description: string;
   likes: number;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-interface ITweetDocument extends Document {
-  author: string;
+export interface ITweetDocument extends Document {
+  author: mongoose.Schema.Types.ObjectId;
   description: string;
   likes: number;
   createdAt?: Date;
@@ -19,7 +22,10 @@ interface ITweetDocument extends Document {
 
 const TweetSchema = new Schema<ITweetDocument>(
   {
-    author: String,
+    author: {
+      type: Schema.Types.ObjectId,
+      ref: 'User'
+    },
     description: String,
     likes: {
       type: Number,
@@ -42,6 +48,9 @@ const TweetSchema = new Schema<ITweetDocument>(
   },
 );
 
-const model = mongoose.model<ITweetDocument>('Tweet', TweetSchema);
+TweetSchema.plugin(normalize);
+TweetSchema.plugin(mongoosePaginate);
+
+const model = mongoose.model('Tweet', TweetSchema);
 
 export default model;

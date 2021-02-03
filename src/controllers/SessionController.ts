@@ -1,9 +1,9 @@
-import {Arg, Mutation, Resolver} from "type-graphql";
+import { Arg, Mutation, Resolver } from "type-graphql";
 import MongoUser from "../database/schemas/User";
-import {compare} from 'bcryptjs';
+import { compare } from 'bcryptjs';
 import Auth from "../schemas/Auth";
 import AuthConfig from "../config/auth";
-import {sign} from "jsonwebtoken";
+import { sign } from "jsonwebtoken";
 
 @Resolver(Auth)
 class AuthController {
@@ -17,20 +17,20 @@ class AuthController {
       email
     });
 
-    if(!user) {
+    if (!user) {
       throw new Error('Incorrect email/password combination.');
     }
 
     const passwordMatched = await compare(password, user.password);
 
-    if(!passwordMatched) {
+    if (!passwordMatched) {
       throw new Error('Incorrect email/password combination.');
     }
 
     const { secret, expiresIn } = AuthConfig.jwt;
 
     const token = sign({}, secret, {
-      subject: `"${user._id}"`,
+      subject: `"${user.id}"`,
       expiresIn
     });
 

@@ -1,14 +1,17 @@
-import {ITweet} from '../database/schemas/Tweet';
-import {Field, ID, ObjectType} from 'type-graphql';
+import { ITweet } from '../database/schemas/Tweet';
+import { Field, ID, InputType, ObjectType } from 'type-graphql';
+import User from "./User";
+import PageInfo from "./Page";
+import Node from './Node';
 
-@ObjectType()
-class Tweet implements ITweet {
+@ObjectType({ implements: Node })
+class Tweet implements ITweet, Node {
 
-  @Field(type => ID, { nullable: true })
-  _id: any;
+  @Field(type => ID, { nullable: false })
+  id: any;
 
-  @Field({ nullable: false })
-  author: string;
+  @Field(type => User, { nullable: true })
+  author: User;
 
   @Field({ nullable: false })
   description: string;
@@ -24,13 +27,43 @@ class Tweet implements ITweet {
 }
 
 @ObjectType()
-export class TweetPagination {
+export class TweetConnection {
 
-  @Field(type => [Tweet])
-  tweets: Tweet[];
+  @Field(type => [TweetEdge])
+  edges: TweetEdge[];
 
   @Field()
-  totalPages: number;
+  count: number;
+
+  @Field(type => PageInfo)
+  pageInfo: PageInfo;
+}
+
+@ObjectType()
+export class TweetEdge {
+
+  @Field({ nullable: false })
+  cursor: string;
+
+  @Field(type => Tweet)
+  node: Tweet;
+}
+
+@InputType()
+export class TweetMutationInput {
+
+  @Field()
+  author: string;
+
+  @Field()
+  description: string;
+}
+
+@ObjectType()
+export class TweetMutationPayload {
+
+  @Field(type => TweetEdge)
+  tweetEdge: TweetEdge;
 }
 
 export default Tweet;

@@ -1,4 +1,4 @@
-import {Arg, Mutation, Query, Resolver} from "type-graphql";
+import { Arg, Mutation, Query, Resolver } from "type-graphql";
 import User from "../schemas/User";
 import MongoUser from "../database/schemas/User";
 import { hash } from 'bcryptjs';
@@ -8,7 +8,7 @@ class UserController {
 
   @Query(returns => [User], { name: 'users' })
   async find() {
-    const users = await MongoUser.find().select(['_id', 'name', 'email', 'createdAt', 'updatedAt']);
+    const users = await MongoUser.find().select(['id', 'name', 'email', 'createdAt', 'updatedAt']);
 
     return users;
   }
@@ -19,7 +19,7 @@ class UserController {
   ) {
     const user = await MongoUser.findById(id);
 
-    if(!user) {
+    if (!user) {
       throw new Error('User does not exists');
     }
 

@@ -1492,10 +1492,10 @@ mongoose-legacy-pluralize@1.0.2:
   resolved "https://registry.yarnpkg.com/mongoose-legacy-pluralize/-/mongoose-legacy-pluralize-1.0.2.tgz#3ba9f91fa507b5186d399fb40854bff18fb563e4"
   integrity sha512-Yo/7qQU4/EyIS8YDFSeenIvXxZN+ld7YdV9LqFVQJzTLye8unujAWPZ4NWKfFA+RNjh+wvTWKY9Z3E5XM6ZZiQ==
 
-mongoose-paginate-v2@^1.3.9:
-  version "1.3.9"
-  resolved "https://registry.yarnpkg.com/mongoose-paginate-v2/-/mongoose-paginate-v2-1.3.9.tgz#dc0f58c22e061d78fc3a898195b884870a737c54"
-  integrity sha512-KXLmsTYDaS7zHqT45B2MZcCGzJtBySGANor5Xf6c0nU3y34xkRMqcDiVTizLd27KGqy5smqLe6LVNkTK994XGA==
+mongoose-paginate-v2@^1.3.14:
+  version "1.3.14"
+  resolved "https://registry.yarnpkg.com/mongoose-paginate-v2/-/mongoose-paginate-v2-1.3.14.tgz#617396bd9c1da3956f983b668909c72ffe6322fe"
+  integrity sha512-3esyrVGYun1s6r5c494zt6oYV6X9SwZ11TtCn4lfOs0rr0PVDK6HDXoSgScAnWjxpMiIMDAz2OIaBF5xM3fuaA==
 
 mongoose@^5.10.2:
   version "5.10.2"
@@ -1554,6 +1554,11 @@ node-fetch@^2.1.2, node-fetch@^2.2.0:
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.0.tgz#e633456386d4aa55863f676a7ab0daa8fdecb0fd"
   integrity sha512-8dG4H5ujfvFiqDmVu9fQ5bOHUC15JMjMY/Zumv26oOvvVJjM67KF8koCWIabKQ1GJIa9r2mMZscBq/TbdOcmNA==
+
+normalize-mongoose@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/normalize-mongoose/-/normalize-mongoose-0.0.1.tgz#be0928bb97341c7e11c1c80e22b901b63c9c357d"
+  integrity sha512-yaEPhQKy3JWLhSzHbQFbLvJc/8t3w0gMHKsGtx4C/YK/kZuMZ1kjZtY9FgMzLra0Pj3btwCd5iRqeYKZL7C32A==
 
 normalize-package-data@^2.3.2, normalize-package-data@^2.3.4:
   version "2.5.0"

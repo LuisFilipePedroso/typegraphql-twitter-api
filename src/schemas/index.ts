@@ -8,8 +8,10 @@ import SessionController from '../controllers/SessionController';
 
 import AuthenticationAssurance from "../middlewares/AuthenticationAssurance";
 
+import Node from "./Node";
+
 const schema = buildSchemaSync({
-  resolvers: [Tweet, TweetController, User, UserController, Auth, SessionController],
+  resolvers: [Tweet, TweetController, User, UserController, Auth, SessionController, Node],
   authChecker: AuthenticationAssurance
 })
 

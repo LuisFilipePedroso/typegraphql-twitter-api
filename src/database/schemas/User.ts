@@ -1,7 +1,8 @@
 import mongoose, { Schema, Document } from 'mongoose';
+import normalize from 'normalize-mongoose';
 
-export interface IUser{
-  _id?: any;
+export interface IUser {
+  id?: any;
   name: string;
   email: string;
   password: string;
@@ -9,7 +10,7 @@ export interface IUser{
   updatedAt?: Date;
 }
 
-interface IUserDocument extends Document {
+export interface IUserDocument extends Document {
   name: string;
   email: string;
   password: string;
@@ -47,6 +48,8 @@ const UserSchema = new Schema<IUserDocument>(
     timestamps: {},
   },
 );
+
+UserSchema.plugin(normalize);
 
 const model = mongoose.model<IUserDocument>('User', UserSchema);
 

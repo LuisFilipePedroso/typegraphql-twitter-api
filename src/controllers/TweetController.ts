@@ -1,20 +1,41 @@
-import {Arg, Authorized, Mutation, Query, Resolver} from 'type-graphql';
-import Tweet, { TweetPagination } from '../schemas/Tweet';
-import MongoTweet from '../database/schemas/Tweet';
+import { Arg, Authorized, Mutation, Query, Resolver } from 'type-graphql';
+import Tweet, { TweetConnection, TweetMutationInput, TweetMutationPayload } from '../schemas/Tweet';
+import MongoTweet, { ITweetDocument } from '../database/schemas/Tweet';
 
 @Resolver(Tweet)
 class TweetController {
 
-  @Query(returns => TweetPagination, { name: 'tweets' })
+  @Query(returns => TweetConnection, { name: 'tweets' })
   @Authorized()
-  async find(
-    @Arg("page") page: number,
-    @Arg("pageSize") pageSize: number) {
-    const tweets = await MongoTweet.find().sort({ createdAt: -1 }).limit(pageSize).skip(pageSize * page);
+  async find(@Arg("first") first: number) {
+    // const tweets = await MongoTweet.find().sort({ createdAt: -1 }).limit(first).skip(first * page).populate('author');
+    const { docs, hasNextPage, hasPrevPage, totalDocs, limit } = await MongoTweet.paginate({}, {
+      limit: first,
+      options: {
+        populate: 'author',
+        sort: {
+          createdAt: -1
+        }
+      }
+    });
 
-    const total = await MongoTweet.countDocuments();
+    const count = await MongoTweet.countDocuments();
 
-    return { tweets, totalPages: Math.ceil(total / pageSize), };
+    const edges = (docs as ITweetDocument[])?.map(tweet => ({
+      cursor: tweet?.id,
+      node: tweet,
+    }))
+
+    return {
+      edges,
+      count,
+      pageInfo: {
+        hasNextPage,
+        hasPreviousPage: hasPrevPage,
+        startCursor: edges[0]?.node?.id,
+        endCursor: edges[limit - 1]?.node?.id
+      }
+    };
   }
 
   @Query(returns => Tweet, { name: 'tweet' })
@@ -22,46 +43,57 @@ class TweetController {
   async findById(
     @Arg("id") id: string
   ) {
-    const tweet = await MongoTweet.findById(id);
+    const tweet = await MongoTweet.findById(id).populate('author');
 
-    if(!tweet) {
+    if (!tweet) {
       throw new Error('Tweet does not exists');
     }
 
     return tweet;
   }
 
-  @Mutation(returns => Tweet, { name: 'createTweets' })
+  @Mutation(returns => TweetMutationPayload, { name: 'createTweet' })
   @Authorized()
   async create(
-    @Arg("author") author: string,
-    @Arg("description") description: string
+    @Arg("data") data: TweetMutationInput
   ) {
+    const { author, description } = data;
+
     const tweet = await MongoTweet.create({ author, description, likes: 0 });
 
-    return tweet;
+    const savedTweet = await MongoTweet.findById(tweet.id).populate('author');
+
+    const tweetEdge = {
+      cursor: savedTweet?.id,
+      node: savedTweet,
+    }
+
+    return {
+      tweetEdge
+    };
   }
 
-  @Mutation(returns => Tweet, { name: 'updateTweet' })
-  @Authorized()
-  async update(
-    @Arg("id") id: string,
-    @Arg("author") author?: string,
-    @Arg("description") description?: string
-  ) {
-    const tweet = await MongoTweet.findByIdAndUpdate(id, { author, description, likes: 0 }, { new: true });
-
-    return tweet;
-  }
+  //TODO: fix it
+  // @Mutation(returns => Tweet, { name: 'updateTweet' })
+  // @Authorized()
+  // async update(
+  //   @Arg("id") id: string,
+  //   @Arg("author") author?: string,
+  //   @Arg("description") description?: string
+  // ) {
+  //   const tweet = await MongoTweet.findByIdAndUpdate(id, { author, description, likes: 0 }, { new: true });
+  //
+  //   return tweet;
+  // }
 
   @Mutation(returns => Tweet)
   @Authorized()
-  async upvoteTweet (
+  async upvoteTweet(
     @Arg("id") id: string
   ) {
-    const tweet = await MongoTweet.findById(id);
+    const tweet = await MongoTweet.findById(id).populate('author');
 
-    if(!tweet) {
+    if (!tweet) {
       throw new Error('Tweet does not exists');
     }
 
@@ -74,12 +106,12 @@ class TweetController {
 
   @Mutation(returns => Tweet)
   @Authorized()
-  async downvoteTweet (
+  async downvoteTweet(
     @Arg("id") id: string
   ) {
-    const tweet = await MongoTweet.findById(id);
+    const tweet = await MongoTweet.findById(id).populate('author');
 
-    if(!tweet) {
+    if (!tweet) {
       throw new Error('Tweet does not exists');
     }
 
