@@ -8,7 +8,6 @@ class TweetController {
   @Query(returns => TweetConnection, { name: 'tweets' })
   @Authorized()
   async find(@Arg("first") first: number) {
-    // const tweets = await MongoTweet.find().sort({ createdAt: -1 }).limit(first).skip(first * page).populate('author');
     const { docs, hasNextPage, hasPrevPage, totalDocs, limit } = await MongoTweet.paginate({}, {
       limit: first,
       options: {
@@ -19,8 +18,6 @@ class TweetController {
       }
     });
 
-    const count = await MongoTweet.countDocuments();
-
     const edges = (docs as ITweetDocument[])?.map(tweet => ({
       cursor: tweet?.id,
       node: tweet,
@@ -28,7 +25,7 @@ class TweetController {
 
     return {
       edges,
-      count,
+      count: totalDocs,
       pageInfo: {
         hasNextPage,
         hasPreviousPage: hasPrevPage,
